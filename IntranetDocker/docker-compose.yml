@@ -1,0 +1,347 @@
+version: "3"
+services: 
+
+  office_lan1_router:
+    container_name: office_lan_1_router
+    hostname: office_lan_1_router
+    privileged: true
+    build: 
+      context: ./
+      dockerfile: dockerfile-myubuntu
+    stdin_open: true
+    tty: true   # Giu giao dien console cua may ao, chu khong tu dong ket thuc may ao.
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh1.sh "    #Tu dong chay lenh cau hinh nay khi khoi dong docker 
+    networks:   # Các card mạng nối với máy ảo này
+      office_lan1_local:
+        ipv4_address: 192.168.0.6
+      
+
+  office_lan2_router:
+    image: intranetdocker_office_lan1_router
+    container_name: office_lan_2_router
+    hostname: office_lan_2_router
+    privileged: true
+    stdin_open: true
+    tty: true   # Giu giao dien console cua may ao, chu khong tu dong ket thuc may ao.
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh2.sh "    #Tu dong chay lenh cau hinh nay khi khoi dong docker 
+    networks:   # Các card mạng nối với máy ảo này
+      office_lan2_local:
+        ipv4_address: 192.168.1.6
+        
+
+  office_router:
+    image: intranetdocker_office_lan1_router
+    container_name: office_router
+    hostname: office_router
+    privileged: true
+    stdin_open: true   
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh3.sh"
+    networks: 
+      office_lan1_local:
+        ipv4_address: 192.168.0.7
+      office_lan2_local:
+        ipv4_address: 192.168.1.7
+      office_local:
+        ipv4_address: 172.100.100.2
+
+
+  ospf_1_router:
+    image: intranetdocker_office_lan1_router
+    container_name: ospf_1_router
+    hostname: ospf_1_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh4.sh"
+    networks:
+      office_local:
+        ipv4_address: 172.100.100.3
+      ospf_1_local:
+        ipv4_address: 172.100.2.2
+
+  ospf_2_router:
+    image: intranetdocker_office_lan1_router
+    container_name: ospf_2_router
+    hostname: ospf_2_router
+    privileged: true
+    stdin_open: true  
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh5.sh"
+    networks:
+      ospf_1_local:
+        ipv4_address: 172.100.2.3
+      ospf_2_local:
+        ipv4_address: 172.100.1.2
+
+  ospf_3_router:
+    image: intranetdocker_office_lan1_router
+    container_name: ospf_3_router
+    hostname: ospf_3_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh6.sh"
+    networks:
+      ospf_2_local:
+        ipv4_address: 172.100.1.3
+      intnet1:
+        ipv4_address: 172.100.0.2
+  
+  backbone_1_router:
+    image: intranetdocker_office_lan1_router
+    container_name: backbone_1_router
+    hostname: backbone_1_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh7.sh"
+    networks:
+      intnet1:
+        ipv4_address: 172.100.0.3
+      backbone1:
+        ipv4_address: 21.0.0.2
+
+  backbone_2_router:
+    image: intranetdocker_office_lan1_router
+    container_name: backbone_2_router
+    hostname: backbone_2_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh8.sh"
+    networks:
+      backbone1:
+        ipv4_address: 21.0.0.3
+      backbone2:
+        ipv4_address: 20.0.0.2  
+
+  backbone_3_router:
+    image: intranetdocker_office_lan1_router
+    container_name: backbone_3_router
+    hostname: backbone_3_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh9.sh"
+    networks:
+      backbone2:
+        ipv4_address: 20.0.0.3
+      intnet2:
+        ipv4_address: 172.101.0.2
+
+  rip_1_router:
+    image: intranetdocker_office_lan1_router
+    container_name: rip_1_router
+    hostname: rip_1_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh10.sh"
+    networks:
+      intnet2:
+        ipv4_address: 172.101.0.3
+      rip1:
+        ipv4_address: 172.101.1.2
+
+  rip_2_router:
+    image: intranetdocker_office_lan1_router
+    container_name: rip_2_router
+    hostname: rip_2_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh11.sh"
+    networks:
+      rip1:
+        ipv4_address: 172.101.1.3
+      rip2:
+        ipv4_address: 172.101.2.2   
+
+  rip_3_router:
+    image: intranetdocker_office_lan1_router
+    container_name: rip_3_router
+    hostname: rip_3_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh12.sh"
+    networks:
+      rip2:
+        ipv4_address: 172.101.2.3
+      home_local:
+        ipv4_address: 172.101.100.2   
+
+  home_router:
+    image: intranetdocker_office_lan1_router
+    container_name: home_router
+    hostname: home_router
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh13.sh"
+    networks:
+      home_local:
+        ipv4_address: 172.101.100.3
+
+  home_may_1:
+    image: intranetdocker_office_lan1_router
+    container_name: home_may_1
+    hostname: home_may_1
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh14.sh"
+    #networks:
+
+  lan_1_may_1:
+    image: intranetdocker_office_lan1_router
+    container_name: lan_1_may_1
+    hostname: lan_1_may_1
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh15.sh"
+    #networks:
+
+
+  lan_1_may_2:
+    image: intranetdocker_office_lan1_router
+    container_name: lan_1_may_2
+    hostname: lan_1_may_2
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh16.sh"
+    #networks:
+
+  lan_2_may_1:
+    image: intranetdocker_office_lan1_router
+    container_name: lan_2_may_1
+    hostname: lan_2_may_1
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh17.sh"
+    #networks:
+
+  lan_2_may_2:
+    image: intranetdocker_office_lan1_router
+    container_name: lan_2_may_2
+    hostname: lan_2_may_2
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/Admin/Desktop/IntranetDocker:/home/root/lenh"
+    command: "/home/root/lenh/cauhinh18.sh"
+    #networks:
+    
+    
+networks:
+  office_lan1_local:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 192.168.0.0/24 
+        gateway: 192.168.0.1
+  office_lan2_local:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 192.168.1.0/24
+        gateway: 192.168.1.1     
+  office_local:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.100.100.0/24 #172.17.100.0/24 khong chay || 172.100.0.0 chay || 192.168.10.0/24 chay 
+        gateway: 172.100.100.1           
+  ospf_1_local:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 172.100.2.0/24
+        gateway: 172.100.2.1
+  ospf_2_local:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 172.100.1.0/24
+        gateway: 172.100.1.1       
+  intnet1:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 172.100.0.0/24 #/16 khong chay
+        gateway: 172.100.0.1
+  backbone1:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 21.0.0.0/8 #21.0.0.0/8 khong chay luc khong || 21.100.0.0/8 chay
+        gateway: 21.0.0.1      
+  backbone2:
+    driver: bridge
+    ipam:   
+      config: 
+      - subnet: 20.0.0.0/8
+        gateway: 20.0.0.1
+  intnet2:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 172.101.0.0/24 #/16 khong chay
+        gateway: 172.101.0.1
+  rip1:
+    driver: bridge
+    ipam:   
+      config: 
+      - subnet: 172.101.1.0/24   
+        gateway: 172.101.1.1
+  rip2:
+    driver: bridge
+    ipam: 
+      config: 
+      - subnet: 172.101.2.0/24
+        gateway: 172.101.2.1
+  home_local:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.101.100.0/24 
+        gateway: 172.101.100.1 
